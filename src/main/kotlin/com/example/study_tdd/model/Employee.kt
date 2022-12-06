@@ -10,14 +10,14 @@ import jakarta.persistence.Id
 class Employee (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long = 0,
 
     @Column(name = "first_name", nullable = false)
-    val firstName: String,
+    var firstName: String,
 
     @Column(name = "last_name", nullable = false)
-    val lastName: String,
+    var lastName: String,
 
     @Column(nullable = false)
-    val email: String
+    var email: String
 )
