@@ -2,6 +2,7 @@ package com.example.study_tdd.repository
 
 import com.example.study_tdd.model.Employee
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,38 +14,47 @@ class EmployeeRepositoryTest {
     @Autowired
     lateinit var employeeRepository: EmployeeRepository
 
+    lateinit var employee: Employee
+    @BeforeEach
+    fun setup() {
+        employee = Employee(
+            firstName = "junghoon",
+            lastName = "kim",
+            email = "devhoon15@test.com"
+        )
+    }
     @Test
     @DisplayName("저장 테스트")
     fun givenEmployeeObject_whenSave_thenReturnSavedEmployee(){
         // given
-        val employee = Employee(
-            firstName = "junghoon",
-            lastName = "kim",
-            email = "devhoon15@gmail.com"
-        )
+//        val employee = Employee(
+//            firstName = "junghoon",
+//            lastName = "kim",
+//            email = "devhoon15@test.com"
+//        )
         // when
         val savedEmployee : Employee = employeeRepository.save(employee)
 
         // then
         Assertions.assertThat(savedEmployee).isNotNull
-        Assertions.assertThat(savedEmployee.id).isEqualTo(1)
+        Assertions.assertThat(savedEmployee.id).isGreaterThan(0)
     }
 
     @Test
     @DisplayName("전체 조회 테스트")
     fun givenTwoEmployees_whenSave_thenReturn2() {
         // given
-        val employee1 = Employee(
-            firstName = "junghoon",
-            lastName = "kim",
-            email = "devhoon15@gmail.com"
-        )
+//        val employee1 = Employee(
+//            firstName = "junghoon",
+//            lastName = "kim",
+//            email = "devhoon15@test.com"
+//        )
         val employee2 = Employee(
             firstName = "gomip",
             lastName = "kim",
-            email = "gomip@gmail.com"
+            email = "gomip@test.com"
         )
-        employeeRepository.save(employee1)
+        employeeRepository.save(employee)
         employeeRepository.save(employee2)
 
         // when
@@ -59,11 +69,11 @@ class EmployeeRepositoryTest {
     @DisplayName("아이디로 조회 테스트")
     fun givenEmployObject_whenFindById_thenReturnSavedEmployeeId() {
         // given
-        val employee = Employee(
-            firstName = "junghoon",
-            lastName = "kim",
-            email = "devhoon15@test.com"
-        )
+//        val employee = Employee(
+//            firstName = "junghoon",
+//            lastName = "kim",
+//            email = "devhoon15@test.com"
+//        )
         employeeRepository.save(employee)
 
         // when
@@ -77,30 +87,29 @@ class EmployeeRepositoryTest {
     @DisplayName("엔티티 속성값(이메일)로 조회 테스트")
     fun givenEmployeeEmail_whenFindByEmail_thenReturnEmployeeObject() {
         // given
-        val employee = Employee(
-            firstName = "junghoon",
-            lastName = "kim",
-            email = "devhoon15@test.com"
-        )
+//        val employee = Employee(
+//            firstName = "junghoon",
+//            lastName = "kim",
+//            email = "devhoon15@test.com"
+//        )
         employeeRepository.save(employee)
 
         // when
-        val newEmployee = employeeRepository.findByEmail("devhoon15@test.com").get()
+        val newEmployee = employeeRepository.findByEmail("devhoon15@test.com")
 
         // then
         Assertions.assertThat(newEmployee).isNotNull
-        println(newEmployee.firstName)
     }
 
     @Test
     @DisplayName("수정 테스트")
     fun givenEmployeeObject_whenUpdateEmployee_thenReturnUpdatedEmployee() {
         // given
-        val employee = Employee(
-            firstName = "junghoon",
-            lastName = "kim",
-            email = "devhoon15@test.com"
-        )
+//        val employee = Employee(
+//            firstName = "junghoon",
+//            lastName = "kim",
+//            email = "devhoon15@test.com"
+//        )
         employeeRepository.save(employee)
 
         // when
@@ -119,11 +128,11 @@ class EmployeeRepositoryTest {
     @DisplayName("삭제 테스트")
     fun givenEmployeeObject_whenDelete_thenRemoveEmployee() {
         // given
-        val employee = Employee(
-            firstName = "junghoon",
-            lastName = "kim",
-            email = "devhoon15@test.com"
-        )
+//        val employee = Employee(
+//            firstName = "junghoon",
+//            lastName = "kim",
+//            email = "devhoon15@test.com"
+//        )
         employeeRepository.save(employee)
 
         // when
@@ -132,5 +141,85 @@ class EmployeeRepositoryTest {
 
         // then
         Assertions.assertThat(employeeOptional).isEmpty
+    }
+
+    @Test
+    @DisplayName("JPQL 조회 테스트")
+    fun givenFirstNameAndLastName_whenFindByJPQL_thenReturnEmployeeObject() {
+        // given
+//        val employee = Employee(
+//            firstName = "junghoon",
+//            lastName = "kim",
+//            email = "devhoon15@test.com"
+//        )
+        employeeRepository.save(employee)
+        val firstName = "junghoon"
+        val lastName = "kim"
+
+        // when
+        val jpql = employeeRepository.findByJPQL(firstName,lastName)
+
+        // then
+        Assertions.assertThat(jpql).isNotNull
+        println(jpql.firstName)
+    }
+
+    @Test
+    @DisplayName("name param으로 JPQL 조회")
+    fun givenFirstNameAndSecondName_whenFindByJPQLNamedParam_thenReturnEmployeeObject() {
+        // given
+//        val employee = Employee(
+//            firstName = "junghoon",
+//            lastName = "kim",
+//            email = "devhoon15@test.com"
+//        )
+        employeeRepository.save(employee)
+        val firstName = "junghoon"
+        val lastName = "kim"
+
+        // when
+        val jpql = employeeRepository.findByJPQLNamedParams(firstName,lastName)
+
+        // then
+        Assertions.assertThat(jpql).isNotNull
+        println(jpql.firstName)
+    }
+
+    @Test
+    @DisplayName("native sql 조회")
+    fun givenFirstNameAndSecondName_whenFindByNativeSql_thenReturnEmployeeObject() {
+        // given
+//        val employee = Employee(
+//            firstName = "junghoon",
+//            lastName = "kim",
+//            email = "devhoon15@test.com"
+//        )
+        employeeRepository.save(employee)
+
+        // when
+        val jpql = employeeRepository.findByNativeSql(employee.firstName,employee.lastName)
+
+        // then
+        Assertions.assertThat(jpql).isNotNull
+        println(jpql.firstName)
+    }
+
+    @Test
+    @DisplayName("native sql namedParam 조회")
+    fun givenFirstNameAndSecondName_whenFindByNativeSqlNamedParam_thenReturnEmployeeObject() {
+        // given
+//        val employee = Employee(
+//            firstName = "junghoon",
+//            lastName = "kim",
+//            email = "devhoon15@test.com"
+//        )
+        employeeRepository.save(employee)
+
+        // when
+        val jpql = employeeRepository.findByNativeSqlNamedParam(employee.firstName,employee.lastName)
+
+        // then
+        Assertions.assertThat(jpql).isNotNull
+        println(jpql.firstName)
     }
 }
