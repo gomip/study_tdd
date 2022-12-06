@@ -17,7 +17,7 @@ class EmployeeServiceImpl (
         val savedEmployee = employeeRepository.findByEmail(employee.email)
             ?: throw ResourceNotFoundException("Employee already Exists with given email : ${employee.email}")
 
-        return employeeRepository.save(employee)
+        return employeeRepository.save(savedEmployee)
     }
 
     override fun getAllEmployee(): List<Employee> {
